@@ -12,20 +12,26 @@ import dataLoader
 from helper import Configure, Quality, Log
 import time
 import math
-import resnet
+from model import Net
 import os
 
-
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def test(model, times):
     ##加载数据
     Log.d('正在验证...')
     val_loader = dataLoader.getFBP500TestDataLoader(times)
+    p = Configure()
+    aug_val_loader = list(
+        enumerate(dataLoader.getDataLoader(p.getFBP500TestTxt(times), p.FBP500_AUG_IMG, p.train_aug_transform)))
+
     out = list()
     lab = list()
     for j, d in enumerate(val_loader):
         val_ima, val_lab = d
-        val_ima = val_ima.cuda()
-        val_out = model(val_ima)
+        val_ima = val_ima.to(device)
+        _,ad=aug_val_loader[j]
+        val_aug_ima,val_aug_lab=ad
+        val_out = model(val_aug_ima,val_ima)
         for i in range(val_out.size(0)):
             out.append(val_out[i].item())
             lab.append(val_lab[i].item())
@@ -58,7 +64,7 @@ def train():
     p = Configure()
 
     Log.d('加载模型——————》》》》》》》》》》》》》')
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
     # pc,rmse,mae
     pcs = []
@@ -69,8 +75,8 @@ def train():
         Log.d('开始第%d次训练......' % (index))
         # 使用预训练的ResNet50
         Log.d("加载模型配置——————》》》》》》》》》》》》》")
-        model = resnet.resnext50_32x4d().to(device)
-
+        model =Net().to(device)
+        model.train()
         # model=ResNet50_att.resnet50(pretrained=True).to(device)
 
         # model.load_state_dict(torch.load('E:/PyProjects/MLP/logs/FBP500/resNet50/weight/resNet50-8200-epochs-0.018446.pth'))
@@ -89,8 +95,9 @@ def train():
 
         Log.d(time.asctime(time.localtime(time.time())))
         Log.d('开始加载训练数据——————》》》》》》》》》》》》》')
-        train_loader = dataLoader.getFBP500TrainDataLoader(times=time)
-
+        orgin_train_loader = dataLoader.getFBP500TrainDataLoader(times=index)
+        p=Configure()
+        aug_train_loader=list(enumerate(dataLoader.getDataLoader(p.getFBP500TrainTxt(index),p.FBP500_AUG_IMG,p.train_aug_transform)))
         Log.i('损失函数：%s\t优化器：%s\t学习率衰减器：%s\t存储位置：%s' % ('MSE', 'SGD', 'stepLr', savePath))
         Log.d('开始训练...')
         pcm = 0
@@ -98,15 +105,18 @@ def train():
         maem = 0
         lastWeight = ''
         for epoch in range(p.START_EPOCHS, p.END_EPOCHS):
-            model.train()
+
             running_loss = 0.0
-            for i, data in enumerate(train_loader):
+            for i, data in enumerate(orgin_train_loader):
                 img, label = data
                 label = label.to(device)
-                # img = torch.stack([torch.rot90(img, k, (2, 3)) for k in range(4)], 0).view((-1, 3, 224, 224))
+                j,augdata=aug_train_loader[i]
+                augimg,auglabel=augdata
+                # img = torch.stack([tor01.1
+                # +ch.rot90(img, k, (2, 3)) for k in range(4)], 0).view((-1, 3, 224, 224))
                 # label = torch.stack([label, label, label, label], 0).view(-1, 5)
                 img = img.to(device)
-                out = model(img)
+                out = model(augimg.to(device),img)
                 loss1 = mse(out, label)
                 loss = loss1
                 running_loss += loss.item()
@@ -120,8 +130,10 @@ def train():
             """
             开始验证val
             """
-            if epoch % 20 == 0:
+            if epoch % 5== 0:
+                model.eval()
                 pc, rmse, mae = test(model, times=index)
+                model.train()
                 if pc > pcm:
                     pcm = pc
                     rmsem = rmse
@@ -193,8 +205,4 @@ def predict(fileName: str):
 
 
 if __name__ == '__main__':
-    savePath = '../logs/FBP5500/resNext50'
-    if not os.path.exists(savePath):
-        os.makedirs(savePath)
-        print('不存在')
-
+    train()

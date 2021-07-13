@@ -262,8 +262,9 @@ def _resnet(
     if pretrained:
         # state_dict = load_state_dict_from_url(model_urls[arch],
         #                                       progress=progress)
-        state_dict=torch.load('')
-        model.load_state_dict(state_dict)
+        if arch=='resnext50_32x4d':
+            state_dict=torch.load('../logs/resnext50_32x4d-7cdf4587.pth')
+            model.load_state_dict(state_dict)
     return model
 
 

@@ -9,12 +9,13 @@ import torch
 from torch.utils.data import Dataset
 import xlrd
 import random
+
+
 class MyDataSet(Dataset):
     def __init__(self, data, y, transform=None):
         self.transform = transform
         self.data = data
         self.y = y
-
 
     def __len__(self):
         return len(self.data)
@@ -24,6 +25,7 @@ class MyDataSet(Dataset):
         if self.transform:
             sample = self.transform(sample)
         return sample, self.y[item]
+
 
 class MyDataSet2(Dataset):
     def __init__(self, data, y, transform=None):
@@ -40,8 +42,8 @@ class MyDataSet2(Dataset):
         if self.transform:
             sample = self.transform(sample)
 
-        x1=sample[:,:76,:76]
-        x2=sample[:,:76,76:152]
+        x1 = sample[:, :76, :76]
+        x2 = sample[:, :76, 76:152]
         x3 = sample[:, :76, 152:228]
         x4 = sample[:, 76:152, :76]
         x5 = sample[:, 76:152, 76:152]
@@ -50,6 +52,7 @@ class MyDataSet2(Dataset):
         x8 = sample[:, 152:228, 76:152]
         x9 = sample[:, 152:228, 152:228]
         return sample, self.y[item]
+
 
 class Data():
 
@@ -113,13 +116,12 @@ class Data():
                 exit()
             else:
                 try:
-                   a=Image.open(wholePath)
+                    a = Image.open(wholePath)
                 except Warning:
                     print(wholePath)
                 else:
                     x.append(a)
         return x, torch.tensor(y)
-
 
     # SCUPT-FBP-500
     @staticmethod
@@ -162,23 +164,24 @@ class Data():
         for i in range(len(imaNames)):
             res.append([imaNames[i], raters[i]])
         random.shuffle(res)
-        s1=-100
-        s2=0
+        s1 = -100
+        s2 = 0
         for index in range(5):
-            s1+=100
-            s2+=100
+            s1 += 100
+            s2 += 100
             with open(f'F:/learnMaterials/Datasets/SCUT-FBP数据集/Rating_Collection/Rating_Collection/train{index}.txt',
                       'w') as file1:
-                e1=0
-                e2=s1
+                e1 = 0
+                e2 = s1
                 for _ in range(2):
-                    for j in range(e1,e2):
+                    for j in range(e1, e2):
                         file1.writelines(str(res[j][0]) + ' ' + str(res[j][1]) + '\n')
-                    e1=s2
-                    e2=500
+                    e1 = s2
+                    e2 = 500
                 file1.close()
-            with open(f'F:/learnMaterials/Datasets/SCUT-FBP数据集/Rating_Collection/Rating_Collection/test{index}.txt', 'w') as file2:
-                for j in range(s1,s2):
+            with open(f'F:/learnMaterials/Datasets/SCUT-FBP数据集/Rating_Collection/Rating_Collection/test{index}.txt',
+                      'w') as file2:
+                for j in range(s1, s2):
                     file2.writelines(str(res[j][0]) + ' ' + str(res[j][1]) + '\n')
                 file2.close()
 
@@ -195,23 +198,23 @@ class Data():
         for i in range(len(imgNames)):
             if imgNames[i] != pre:
                 pre = imgNames[i]
-            res[int(pre)-1][int(scores[i])-1] += 1
+            res[int(pre) - 1][int(scores[i]) - 1] += 1
 
-        sort=[i for i in range(500)]
+        sort = [i for i in range(500)]
         shuffle(sort)
 
-        s1=-100
-        s2=0
+        s1 = -100
+        s2 = 0
         for index in range(5):
-            s1+=100
-            s2+=100
+            s1 += 100
+            s2 += 100
             saveFile = f'F:/learnMaterials/Datasets/SCUT-FBP数据集/Rating_Collection/Rating_Collection/LDLTrain{index}.txt'
             file = open(saveFile, 'w')
             e1 = 0
             e2 = s1
             for _ in range(2):
-                for k in range(e1,e2):
-                    i=sort[k]
+                for k in range(e1, e2):
+                    i = sort[k]
                     count = 0
                     for j in range(5):
                         count += int(res[i][j])
@@ -220,16 +223,17 @@ class Data():
                     rate3 = str(int(res[i][2]) / count)
                     rate4 = str(int(res[i][3]) / count)
                     rate5 = str(int(res[i][4]) / count)
-                    file.writelines('SCUT-FBP-' + str(i+1) + '.jpg' + ' ' + rate1 + ' ' + rate2 + ' ' + rate3 + ' ' + rate4+' '+rate5+'\n')
-                e1=s2
-                e2=500
+                    file.writelines('SCUT-FBP-' + str(
+                        i + 1) + '.jpg' + ' ' + rate1 + ' ' + rate2 + ' ' + rate3 + ' ' + rate4 + ' ' + rate5 + '\n')
+                e1 = s2
+                e2 = 500
             file.close()
             saveFile = f'F:/learnMaterials/Datasets/SCUT-FBP数据集/Rating_Collection/Rating_Collection/LDLTest{index}.txt'
             file = open(saveFile, 'w')
-            for k in range(s1,s2):
+            for k in range(s1, s2):
                 i = sort[k]
                 count = 0
-                maxi=0
+                maxi = 0
                 for j in range(5):
                     count += int(res[i][j])
                 rate1 = str(int(res[i][0]) / count)
@@ -237,12 +241,13 @@ class Data():
                 rate3 = str(int(res[i][2]) / count)
                 rate4 = str(int(res[i][3]) / count)
                 rate5 = str(int(res[i][4]) / count)
-                file.writelines('SCUT-FBP-' + str(i+1) + '.jpg' +' '+ str(rate1) + ' ' + str(rate2) + ' ' + str(rate3) + ' ' + str(rate4) + ' ' + str(rate5)+' '+str(maxi+1)+'\n')
+                file.writelines('SCUT-FBP-' + str(i + 1) + '.jpg' + ' ' + str(rate1) + ' ' + str(rate2) + ' ' + str(
+                    rate3) + ' ' + str(rate4) + ' ' + str(rate5) + ' ' + str(maxi + 1) + '\n')
             pass
 
     @staticmethod
-    def loadFBP500LDLTxt(txtPath,imaPath):
-        file=open(txtPath)
+    def loadFBP500LDLTxt(txtPath, imaPath):
+        file = open(txtPath)
         lists = []
         y = []
         while True:
@@ -250,7 +255,7 @@ class Data():
             if str:
                 s = str.strip('\n').split(' ')
                 lists.append(s[0])
-                y.append([[float(s[i]) for i in range(1,6)]])
+                y.append([[float(s[i]) for i in range(1, 6)]])
             else:
                 break
 
@@ -262,7 +267,7 @@ class Data():
                 exit()
             else:
                 try:
-                    a=Image.open(wholePath).convert("RGB")
+                    a = Image.open(wholePath).convert("RGB")
                     x.append(a)
                 except:
                     print(wholePath)
@@ -273,59 +278,96 @@ class Data():
         pass
 
 
-
-def _loader(times=0, flag='train', data='FBP500'):
-    config = Configure()
-    path = ''
-    imgPath = ''
-    if data == 'FBP500':
-        imgPath = config.FBP500_IMG
-        if flag == 'train':
-            transform = config.train_transform
-            path = config.getFBP500TrainTxt(times)
-        elif flag == 'test':
-            transform = config.test_transform
-            path = config.getFBP500TestTxt(times)
-    elif data == 'FBP5500':
-        imgPath = config.FBP5500_IMG
-        if flag == 'train':
-            transform = config.train_transform
-            path = config.getFBP5500TrainTxt(times)
-        elif flag == 'test':
-            transform = config.test_transform
-            path = config.getFBP5500TestTxt(times)
-    x,y=Data.loadTextData(path, imgPath)
-    dataSet = MyDataSet(x,y, transform=transform)
-    return torch.utils.data.DataLoader(dataset=dataSet, batch_size=config.BATCH_SIZE, shuffle=False)
+def _loader(batchSize=4, txtPath='', imgPath='', transform=None):
+    x, y = Data.loadTextData(txtPath, imgPath)
+    dataSet = MyDataSet(x, y, transform=transform)
+    return torch.utils.data.DataLoader(dataset=dataSet, batch_size=batchSize, shuffle=False)
 
 
 def getFBP500TrainDataLoader(times=0):
-    return _loader(times=times, flag='train', data='FBP500')
+    config = Configure()
+    txtPath = config.getFBP500TrainTxt(times)
+    imgPath = config.FBP500_IMG
+    transformer = config.train_transform
+    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP500TestDataLoader(times=0):
-    return _loader(times=times, flag='test', data='FBP500')
+    config = Configure()
+    txtPath = config.getFBP500TestTxt(times)
+    imgPath = config.FBP500_IMG
+    transformer = config.test_transform
+    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP5500TrainDataLoader(times=0):
-    return _loader(times=times, flag='train', data='FBP5500')
+    config = Configure()
+    txtPath = config.getFBP5500TrainTxt(times)
+    imgPath = config.FBP5500_IMG
+    transformer = config.train_transform
+    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP5500TestDataLoader(times=0):
-    return _loader(times=times, flag='train', data='FBP5500')
+    config = Configure()
+    txtPath = config.getFBP5500TestTxt(times)
+    imgPath = config.FBP5500_IMG
+    transformer = config.test_transform
+    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
+
+def getDataLoader(txtPath='', imgPath='',transformer=None):
+    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+
+
+#
+#
+# def _loader(times=0, flag='train', data='FBP500'):
+#     config = Configure()
+#     path = ''
+#     imgPath = ''
+#     if data == 'FBP500':
+#         imgPath = config.FBP500_IMG
+#         if flag == 'train':
+#             transform = config.train_transform
+#             path = config.getFBP500TrainTxt(times)
+#         elif flag == 'test':
+#             transform = config.test_transform
+#             path = config.getFBP500TestTxt(times)
+#     elif data == 'FBP5500':
+#         imgPath = config.FBP5500_IMG
+#         if flag == 'train':
+#             transform = config.train_transform
+#             path = config.getFBP5500TrainTxt(times)
+#         elif flag == 'test':
+#             transform = config.test_transform
+#             path = config.getFBP5500TestTxt(times)
+#     x,y=Data.loadTextData(path, imgPath)
+#     dataSet = MyDataSet(x,y, transform=transform)
+#     return torch.utils.data.DataLoader(dataset=dataSet, batch_size=config.BATCH_SIZE, shuffle=False)
+#
+#
+# def getFBP500TrainDataLoader(times=0):
+#     return _loader(times=times, flag='train', data='FBP500')
+#
+#
+# def getFBP500TestDataLoader(times=0):
+#     return _loader(times=times, flag='test', data='FBP500')
+#
+#
+# def getFBP5500TrainDataLoader(times=0):
+#     return _loader(times=times, flag='train', data='FBP5500')
+#
+#
+# def getFBP5500TestDataLoader(times=0):
+#     return _loader(times=times, flag='train', data='FBP5500')
 
 
 if __name__ == '__main__':
-    l=getFBP500TrainDataLoader(1)
-    a=getFBP500TrainDataLoader(1)
-    b=list(enumerate(l))
-    c=list(enumerate(a))
-    for i,v in b:
-        j,d=c[i]
-        print(j)
-
-
-
-
-
+    l = getFBP500TrainDataLoader(1)
+    a = getFBP500TrainDataLoader(1)
+    b = list(enumerate(l))
+    c = list(enumerate(a))
+    for i, v in b:
+        j, d = c[i]
+        print(i,j)

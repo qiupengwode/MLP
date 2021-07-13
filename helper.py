@@ -56,6 +56,7 @@ class Configure():
         self.TRAIN_FBP500_TXT = self.DATA_ROOT + '/SCUT-FBP数据集/Rating_Collection/Rating_Collection/train.txt'
         self.TEST_FBP500_TXT = self.DATA_ROOT + '/SCUT-FBP数据集/Rating_Collection/Rating_Collection/test.txt'
         self.FBP500_IMG = self.DATA_ROOT + '/SCUT-FBP数据集/Data_Collection/Data_Collection'
+        self.FBP500_AUG_IMG=self.DATA_ROOT + '/SCUT-FBP数据集/Data_Collection/DataAug'
         self.TRAIN_FBP5500_TXT = self.DATA_ROOT + '/SCUT-FBP5500_with_Landmarks/SCUT-FBP5500_with_Landmarks/' \
                                                   'train_test_files/split_of_60%training and 40%testing/train.txt'
         self.FBP5500_IMG = self.DATA_ROOT + '/SCUT-FBP5500_with_Landmarks/SCUT-FBP5500_with_Landmarks/Images'
@@ -67,6 +68,12 @@ class Configure():
             transforms.CenterCrop(224),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+        self.train_aug_transform=transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485], std=[0.229])
         ])
         self.test_transform = transforms.Compose([
             transforms.Resize(256),
