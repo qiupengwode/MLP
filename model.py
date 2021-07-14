@@ -31,6 +31,7 @@ class Net(nn.Module):
     def forward(self,x1,x2):
         x1=self.project(x1)
         x2=self.feature(x2)
+
         x3=x1*x2
         x3=self.fc(x3)
         return x3

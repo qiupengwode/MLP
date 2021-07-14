@@ -14,10 +14,14 @@ import time
 import math
 from model import Net
 import os
-
+"""
+baseLine+注意力机制
+首先将图片进行边缘特征提取，过去色彩，纹理信息，保留人脸轮廓信息，然后通过网络提取特征，通过轮廓信息得到人脸关键部位注意力增强。
+"""
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def test(model, times):
     ##加载数据
+
     Log.d('正在验证...')
     val_loader = dataLoader.getFBP500TestDataLoader(times)
     p = Configure()
@@ -31,7 +35,7 @@ def test(model, times):
         val_ima = val_ima.to(device)
         _,ad=aug_val_loader[j]
         val_aug_ima,val_aug_lab=ad
-        val_out = model(val_aug_ima,val_ima)
+        val_out = model(val_aug_ima.to(device),val_ima)
         for i in range(val_out.size(0)):
             out.append(val_out[i].item())
             lab.append(val_lab[i].item())

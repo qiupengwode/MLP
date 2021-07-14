@@ -289,7 +289,7 @@ def getFBP500TrainDataLoader(times=0):
     txtPath = config.getFBP500TrainTxt(times)
     imgPath = config.FBP500_IMG
     transformer = config.train_transform
-    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+    return _loader(batchSize=config.BATCH_SIZE,txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP500TestDataLoader(times=0):
@@ -297,7 +297,7 @@ def getFBP500TestDataLoader(times=0):
     txtPath = config.getFBP500TestTxt(times)
     imgPath = config.FBP500_IMG
     transformer = config.test_transform
-    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+    return _loader(batchSize=config.BATCH_SIZE,txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP5500TrainDataLoader(times=0):
@@ -305,7 +305,7 @@ def getFBP5500TrainDataLoader(times=0):
     txtPath = config.getFBP5500TrainTxt(times)
     imgPath = config.FBP5500_IMG
     transformer = config.train_transform
-    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+    return _loader(batchSize=config.BATCH_SIZE,txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getFBP5500TestDataLoader(times=0):
@@ -313,11 +313,12 @@ def getFBP5500TestDataLoader(times=0):
     txtPath = config.getFBP5500TestTxt(times)
     imgPath = config.FBP5500_IMG
     transformer = config.test_transform
-    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+    return _loader(batchSize=config.BATCH_SIZE,txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 def getDataLoader(txtPath='', imgPath='',transformer=None):
-    return _loader(txtPath=txtPath, imgPath=imgPath, transform=transformer)
+    config = Configure()
+    return _loader(batchSize=config.BATCH_SIZE,txtPath=txtPath, imgPath=imgPath, transform=transformer)
 
 
 #
